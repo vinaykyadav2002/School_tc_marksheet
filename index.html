@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Management System - Marksheet & TC Portal</title>
+
+  <!-- Google Fonts for Modern UI and High-Class Marksheet Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&family=Caveat:wght@600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- ====================================================================
+       ADMIN AUTHENTICATION GATEWAY (LOGIN OVERLAY)
+       ==================================================================== -->
+  <div id="adminLoginScreen" class="admin-login-screen">
+    <div class="admin-login-backdrop">
+      <div class="login-glow-circle circle-1"></div>
+      <div class="login-glow-circle circle-2"></div>
+    </div>
+
+    <div class="admin-login-card">
+      <div class="login-brand-header">
+        <div class="login-logo-wrap">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+        </div>
+        <h2 class="login-school-title">DR. RAM MANOHAR LOHIA PUBLIC SCHOOL</h2>
+        <p class="login-subtitle">School Management & Marksheet Portal • Admin Login</p>
+      </div>
+
+      <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="login-form">
+        <div class="login-error-alert" id="loginErrorAlert" style="display:none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span id="loginErrorText">Invalid username or password.</span>
+        </div>
+
+        <div class="login-form-group">
+          <label class="login-label" for="loginUsername">Admin Username</label>
+          <div class="login-input-wrap">
+            <svg class="login-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+            <input type="text" id="loginUsername" class="login-input" placeholder="e.g. admin" autocomplete="username" required>
+          </div>
+        </div>
+
+        <div class="login-form-group">
+          <label class="login-label" for="loginPassword">Password</label>
+          <div class="login-input-wrap">
+            <svg class="login-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" id="loginPassword" class="login-input" placeholder="Enter admin password" autocomplete="current-password" required>
+            <button type="button" class="btn-toggle-pwd" onclick="toggleLoginPasswordVisibility()" title="Show/Hide Password">
+              <svg id="eyeIconOpen" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg id="eyeIconClosed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="login-options-row">
+          <label class="login-remember-label">
+            <input type="checkbox" id="chkRememberMe" checked>
+            <span>Remember login</span>
+          </label>
+          <span class="login-hint-badge" title="Default credentials">Default: admin / admin123</span>
+        </div>
+
+        <button type="submit" class="btn-login-submit" id="btnLoginSubmit">
+          <span>Sign In to Dashboard</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </form>
+
+      <div class="login-card-footer">
+        <div class="login-security-tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>Authorized School Staff Access Only</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-container auth-locked" id="mainAppContainer">
+
+    <!-- ====================================================================
+         LEFT SIDEBAR NAVIGATION (DASHBOARD WORKSPACE)
+         ==================================================================== -->
+    <aside class="app-sidebar" id="appSidebar">
+      <!-- School Brand Header -->
+      <div class="sidebar-header">
+        <div class="sidebar-brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+        </div>
+        <div class="sidebar-brand-info">
+          <div class="sidebar-brand-title" id="sbSchoolTitle">RML Public School</div>
+          <div class="sidebar-brand-sub" id="sbSchoolSub">Badlapur, Jaunpur</div>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main Menu</div>
+
+        <!-- 1. Dashboard -->
+        <button class="sidebar-nav-item active" id="navItemDashboard" onclick="switchView('dashboard')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="7" height="9" x="3" y="3" rx="1" />
+            <rect width="7" height="5" x="14" y="3" rx="1" />
+            <rect width="7" height="9" x="14" y="12" rx="1" />
+            <rect width="7" height="5" x="3" y="16" rx="1" />
+          </svg>
+          <span>Dashboard</span>
+        </button>
+
+        <!-- 2. Students -->
+        <button class="sidebar-nav-item" id="navItemStudents" onclick="switchView('students')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          <span>Students</span>
+          <span class="sidebar-nav-badge" id="sbStudentCountBadge">0</span>
+        </button>
+
+        <!-- 3. Add Student -->
+        <button class="sidebar-nav-item" id="navItemAddStudent" onclick="openAddStudentModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <line x1="19" y1="8" x2="19" y2="14" />
+            <line x1="22" y1="11" x2="16" y2="11" />
+          </svg>
+          <span>Add Student</span>
+        </button>
+
+        <!-- 4. Search Student -->
+        <button class="sidebar-nav-item" id="navItemSearch" onclick="switchView('search')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <span>Search Student</span>
+        </button>
+
+        <div class="nav-section-label">Certificates & Exams</div>
+
+        <!-- 5. Marksheet Generator -->
+        <button class="sidebar-nav-item" id="navItemMarksheet" onclick="switchView('marksheet')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+          </svg>
+          <span>Marksheet</span>
+        </button>
+
+        <!-- 6. Transfer Certificate (TC) -->
+        <button class="sidebar-nav-item" id="navItemTC" onclick="switchView('tc')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+            <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+            <path d="M10 9H8" />
+            <path d="M16 13H8" />
+          </svg>
+          <span>Transfer Certificate</span>
+        </button>
+
+        <div class="nav-section-label">Administration</div>
+
+        <!-- 7. Settings -->
+        <button class="sidebar-nav-item" id="navItemSettings" onclick="switchView('settings')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-stat">
+          <span>Active Session</span>
+          <strong id="sbActiveSession">2025 - 2026</strong>
+        </div>
+        <button class="btn btn-xs btn-danger-ghost btn-sidebar-logout" onclick="handleAdminLogout()" title="Sign Out of Admin Session">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ====================================================================
+         MAIN CONTENT WORKSPACE
+         ==================================================================== -->
+    <div class="app-main-layout">
+
+      <!-- Top Header Bar -->
+      <header class="top-header">
+        <div class="top-header-left">
+          <button class="btn-sidebar-toggle" onclick="toggleSidebar()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <div class="header-page-title-wrap">
+            <h1 class="header-page-title" id="pageMainHeading">School Management Dashboard</h1>
+            <span class="header-page-subtitle" id="pageSubHeading">Dr. Ram Manohar Lohia Public School, Badlapur,
+              Jaunpur</span>
+          </div>
+        </div>
+
+        <div class="top-header-right">
+          <div class="session-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <span id="topSessionText">Session: 2025 - 2026</span>
+          </div>
+
+          <button class="btn btn-sm btn-primary" onclick="openAddStudentModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            <span>Add Student</span>
+          </button>
+
+          <button class="btn btn-sm btn-outline" onclick="triggerDirectPrint()" id="topPrintBtn"
+            title="Direct Print Document">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9" />
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+              <rect width="12" height="8" x="6" y="14" />
+            </svg>
+            <span>Print</span>
+          </button>
+
+          <button class="btn btn-sm btn-danger-ghost btn-header-logout" onclick="handleAdminLogout()" title="Sign Out">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>Logout</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Workspace Views Container -->
+      <main class="workspace-views">
+
+        <!-- ==============================================================
+             1. DASHBOARD OVERVIEW VIEW
+             ============================================================== -->
+        <section class="view-panel active" id="viewDashboard">
+          <div class="scrollable-view-content">
+
+            <!-- Top Metric Cards -->
+            <div class="dashboard-stats-grid">
+              <div class="stat-card" onclick="switchView('students')">
+                <div class="stat-icon-wrap stat-icon-blue">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-label">Total Students</span>
+                  <span class="stat-value" id="dashTotalStudents">0</span>
+                </div>
+              </div>
+
+              <div class="stat-card" onclick="switchView('students')">
+                <div class="stat-icon-wrap stat-icon-green">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-label">Active Classes</span>
+                  <span class="stat-value" id="dashTotalClasses">0</span>
+                </div>
+              </div>
+
+              <div class="stat-card" onclick="switchView('marksheet')">
+                <div class="stat-icon-wrap stat-icon-amber">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-label">Marksheets Generated</span>
+                  <span class="stat-value" id="dashTotalMarksheets">0</span>
+                </div>
+              </div>
+
+              <div class="stat-card" onclick="switchView('tc')">
+                <div class="stat-icon-wrap stat-icon-purple">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                    <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                    <path d="M10 9H8" />
+                    <path d="M16 13H8" />
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-label">TCs Issued</span>
+                  <span class="stat-value" id="dashTotalTCs">0</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Action Cards -->
+            <div class="dashboard-actions-grid">
+              <div class="dash-action-btn" onclick="openAddStudentModal()">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="16" />
+                  <line x1="8" y1="12" x2="16" y2="12" />
+                </svg>
+                <div>
+                  <h4>Add New Student</h4>
+                  <p>Register student with Class & Section</p>
+                </div>
+              </div>
+
+              <div class="dash-action-btn" onclick="switchView('marksheet')">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+                <div>
+                  <h4>Generate Marksheet</h4>
+                  <p>Create & print official A4 report card</p>
+                </div>
+              </div>
+
+              <div class="dash-action-btn" onclick="switchView('tc')">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                  <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                </svg>
+                <div>
+                  <h4>Issue Transfer Certificate</h4>
+                  <p>Generate formal TC for pupil</p>
+                </div>
+              </div>
+
+              <div class="dash-action-btn" onclick="switchView('search')">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <div>
+                  <h4>Search Directory</h4>
+                  <p>Find student by Name or Roll No</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Class-Wise Student Distribution Summary -->
+            <div class="dashboard-section">
+              <div class="section-head">
+                <h3>Class-Wise Student Summary</h3>
+                <button class="btn btn-xs btn-outline" onclick="switchView('students')">View All Students</button>
+              </div>
+              <div class="class-grid" id="dashClassBreakdownGrid">
+                <!-- Starts clean / empty; rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Recent Students Section -->
+            <div class="dashboard-section">
+              <div class="section-head">
+                <h3>Recently Registered Students</h3>
+                <button class="btn btn-xs btn-primary" onclick="openAddStudentModal()">+ Add Student</button>
+              </div>
+              <div id="dashRecentStudentsTableWrap">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             2. STUDENTS MANAGEMENT VIEW (CLASS & SECTION DRIVEN)
+             ============================================================== -->
+        <section class="view-panel" id="viewStudents">
+          <div class="scrollable-view-content">
+
+            <!-- Filter & Selection Bar -->
+            <div class="filter-bar">
+              <div class="filter-group">
+                <div class="filter-item">
+                  <span class="filter-label">Class:</span>
+                  <select id="selStudentFilterClass" class="form-control form-control-sm"
+                    onchange="onStudentFilterChanged()">
+                    <option value="">All Classes</option>
+                    <option value="Class 1">Class 1</option>
+                    <option value="Class 2">Class 2</option>
+                    <option value="Class 3">Class 3</option>
+                    <option value="Class 4">Class 4</option>
+                    <option value="Class 5">Class 5</option>
+                    <option value="Class 6">Class 6</option>
+                    <option value="Class 7">Class 7</option>
+                    <option value="Class 8">Class 8</option>
+                    <option value="Class 9">Class 9</option>
+                    <option value="Class 10">Class 10</option>
+                    <option value="Class 11">Class 11</option>
+                    <option value="Class 12">Class 12</option>
+                    <option value="Nursery">Nursery</option>
+                    <option value="LKG">LKG</option>
+                    <option value="UKG">UKG</option>
+                  </select>
+                </div>
+
+                <div class="filter-item">
+                  <span class="filter-label">Section:</span>
+                  <select id="selStudentFilterSection" class="form-control form-control-sm"
+                    onchange="onStudentFilterChanged()">
+                    <option value="">All Sections</option>
+                    <option value="A">Section A</option>
+                    <option value="B">Section B</option>
+                    <option value="C">Section C</option>
+                    <option value="D">Section D</option>
+                  </select>
+                </div>
+
+                <div class="search-input-wrap">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <input type="text" id="inpStudentTableSearch" class="form-control form-control-sm"
+                    placeholder="Search in this view..." oninput="onStudentFilterChanged()">
+                </div>
+              </div>
+
+              <div>
+                <button class="btn btn-sm btn-primary" onclick="openAddStudentModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  <span>+ Add Student</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Students List Table -->
+            <div class="students-table-wrap" id="studentsMainTableContainer">
+              <!-- Rendered dynamically -->
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             3. SEARCH STUDENT MODULE
+             ============================================================== -->
+        <section class="view-panel" id="viewSearch">
+          <div class="scrollable-view-content">
+
+            <div class="dashboard-section">
+              <div class="section-head">
+                <h3>School-Wide Student Search</h3>
+              </div>
+
+              <div class="form-grid" style="grid-template-columns: 1fr; margin-top: 0.5rem;">
+                <div class="search-input-wrap" style="width: 100%;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <input type="text" id="inpGlobalSearch" class="form-control"
+                    placeholder="Search by Student Name, Roll Number, Admission Number, Father's Name, Class, Section or Phone..."
+                    oninput="performGlobalSearch(this.value)" autofocus>
+                </div>
+              </div>
+
+              <div id="searchResultsContainer" style="margin-top: 1rem;">
+                <div class="empty-state-box">
+                  <div class="empty-state-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="11" cy="11" r="8" />
+                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                  </div>
+                  <h4>Search Any Student in the School</h4>
+                  <p>Type student name, roll number, admission number or class to instantly locate records and create
+                    Marksheet or TC.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             4. MARKSHEET MODULE (CLASS/SECTION/STUDENT SELECTOR + PREVIEW)
+             ============================================================== -->
+        <section class="view-panel" id="viewMarksheet">
+          <div class="split-workspace-view">
+
+            <!-- Left Column: Form & Settings Editor -->
+            <aside class="editor-pane">
+              <div class="editor-header">
+                <div class="editor-header-title">
+                  <h2>Marksheet Editor & Settings</h2>
+                  <p>Select a student or edit details. Updates live on the right.</p>
+                </div>
+                <button class="btn btn-xs btn-ghost" onclick="clearActiveMarksheet()" title="Reset marksheet data">
+                  <span>Reset</span>
+                </button>
+              </div>
+
+              <div class="editor-scroll-body">
+
+                <!-- 0. Class-wise & Section-wise Student Selector Ribbon -->
+                <div class="student-selector-bar">
+                  <div class="selector-bar-title">
+                    <span>Select Student from Database</span>
+                    <button class="btn btn-xs btn-outline" onclick="openAddStudentModal()">+ New Student</button>
+                  </div>
+                  <div class="selector-dropdowns-row">
+                    <div>
+                      <label class="form-label">1. Class</label>
+                      <select id="msSelectClass" class="form-control form-control-sm"
+                        onchange="onMsClassSelected(this.value)">
+                        <option value="">-- Class --</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="form-label">2. Section</label>
+                      <select id="msSelectSection" class="form-control form-control-sm"
+                        onchange="onMsSectionSelected(this.value)">
+                        <option value="">-- Section --</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="form-label">3. Student</label>
+                      <select id="msSelectStudent" class="form-control form-control-sm"
+                        onchange="onMsStudentSelected(this.value)">
+                        <option value="">-- Choose Student --</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="selected-student-chip" id="msActiveStudentChip">
+                    <span>Active Student: <strong id="msActiveStudentName">None Selected</strong></span>
+                    <span id="msActiveStudentRoll" style="color:#94a3b8; font-size:0.72rem;"></span>
+                  </div>
+                </div>
+
+                <!-- 1. School Information Section -->
+                <section class="form-section-card">
+                  <div class="section-card-title">
+                    <span class="step-num">1</span>
+                    <span>School Details & Logo</span>
+                  </div>
+
+                  <div class="form-grid">
+                    <div class="form-group full-width">
+                      <label class="form-label">School Name</label>
+                      <input type="text" id="inpSchoolName" class="form-control"
+                        placeholder="e.g. DR. RAM MANOHAR LOHIA PUBLIC SCHOOL" oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group full-width">
+                      <label class="form-label">School Address / City</label>
+                      <input type="text" id="inpSchoolAddress" class="form-control" placeholder="e.g. BADLAPUR, JAUNPUR"
+                        oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group full-width">
+                      <label class="form-label">School Tagline / Subtitle</label>
+                      <input type="text" id="inpSchoolTagline" class="form-control"
+                        placeholder="e.g. — Discipline | Knowledge | Success —" oninput="onDataChanged()">
+                    </div>
+
+                    <!-- School Logo Upload Box -->
+                    <div class="form-group full-width">
+                      <label class="form-label">School Logo</label>
+                      <div class="media-upload-box">
+                        <div class="media-preview-container" id="logoPreviewWrap">
+                          <span class="media-placeholder-txt">No Logo</span>
+                        </div>
+                        <div class="media-btn-group">
+                          <label class="btn btn-sm btn-outline file-upload-label">
+                            <span>Upload Logo</span>
+                            <input type="file" id="fileSchoolLogo" accept="image/*"
+                              onchange="handleMediaUpload(this, 'schoolLogo')" style="display: none;">
+                          </label>
+                          <button class="btn btn-sm btn-danger-ghost" id="btnRemoveLogo"
+                            onclick="removeMedia('schoolLogo')" style="display: none;">Remove</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- 2. Academic Examination Details Section -->
+                <section class="form-section-card">
+                  <div class="section-card-title">
+                    <span class="step-num">2</span>
+                    <span>Academic & Examination Details</span>
+                  </div>
+
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label class="form-label">Academic Session</label>
+                      <input type="text" id="inpAcademicSession" class="form-control" placeholder="e.g. 2025 - 2026"
+                        oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Examination Name</label>
+                      <input type="text" id="inpExamName" class="form-control"
+                        placeholder="e.g. REPORT CARD / MARKSHEET" oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Top Motto</label>
+                      <input type="text" id="inpTopMotto" class="form-control"
+                        placeholder="e.g. Education Today | Character Tomorrow" oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Footer Quote</label>
+                      <input type="text" id="inpFooterQuote" class="form-control"
+                        placeholder="e.g. “Education is the Key to a Brighter Future”" oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Issue Date</label>
+                      <input type="text" id="inpIssueDate" class="form-control"
+                        placeholder="e.g. 30-09-2026 (or leave blank)" oninput="onDataChanged()">
+                    </div>
+                  </div>
+                </section>
+
+                <!-- 3. Student Details Section -->
+                <section class="form-section-card">
+                  <div class="section-card-title">
+                    <span class="step-num">3</span>
+                    <span>Student Information & Photo</span>
+                  </div>
+
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label class="form-label">Student Name</label>
+                      <input type="text" id="inpStudentName" class="form-control" placeholder="Student name"
+                        oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Father's Name</label>
+                      <input type="text" id="inpFatherName" class="form-control" placeholder="Father's name"
+                        oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Mother's Name</label>
+                      <input type="text" id="inpMotherName" class="form-control" placeholder="Mother's name"
+                        oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Class</label>
+                      <input type="text" id="inpClass" class="form-control" placeholder="e.g. Class 6"
+                        oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Section</label>
+                      <input type="text" id="inpSection" class="form-control" placeholder="e.g. A"
+                        oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Roll Number</label>
+                      <input type="text" id="inpRollNo" class="form-control" placeholder="e.g. 12"
+                        oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Admission Number</label>
+                      <input type="text" id="inpAdmissionNo" class="form-control" placeholder="e.g. 2025/0145"
+                        oninput="onDataChanged()">
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Date of Birth</label>
+                      <input type="text" id="inpDob" class="form-control" placeholder="e.g. 15-08-2014"
+                        oninput="onDataChanged()">
+                    </div>
+
+                    <!-- Student Photo Upload Box -->
+                    <div class="form-group full-width">
+                      <label class="form-label">Student Photo</label>
+                      <div class="media-upload-box">
+                        <div class="media-preview-container photo-box" id="studentPhotoPreviewWrap">
+                          <span class="media-placeholder-txt">No Photo</span>
+                        </div>
+                        <div class="media-btn-group">
+                          <label class="btn btn-sm btn-outline file-upload-label">
+                            <span>Upload Photo</span>
+                            <input type="file" id="fileStudentPhoto" accept="image/*"
+                              onchange="handleMediaUpload(this, 'studentPhoto')" style="display: none;">
+                          </label>
+                          <button class="btn btn-sm btn-danger-ghost" id="btnRemovePhoto"
+                            onclick="removeMedia('studentPhoto')" style="display: none;">Remove</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- 4. Subjects & Marks Table Section -->
+                <section class="form-section-card">
+                  <div class="section-card-title flex-between">
+                    <div>
+                      <span class="step-num">4</span>
+                      <span>Subjects & Marks Entry</span>
+                    </div>
+                    <div style="display:flex; gap:0.4rem;">
+                      <button class="btn btn-sm btn-primary" onclick="addSubjectRow()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2.5">
+                          <line x1="12" y1="5" x2="12" y2="19" />
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        <span>+ Add Subject</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Live Calculations Ribbon -->
+                  <div class="calc-strip">
+                    <div class="calc-item">
+                      <span class="c-lbl">Total Marks</span>
+                      <strong class="c-val" id="calcDisplayTotal">0 / 0</strong>
+                    </div>
+                    <div class="calc-item">
+                      <span class="c-lbl">Percentage</span>
+                      <strong class="c-val highlight-blue" id="calcDisplayPerc">0.00%</strong>
+                    </div>
+                    <div class="calc-item">
+                      <span class="c-lbl">Grade</span>
+                      <strong class="c-val" id="calcDisplayGrade">-</strong>
+                    </div>
+                    <div class="calc-item">
+                      <span class="c-lbl">Result</span>
+                      <strong class="c-val highlight-green" id="calcDisplayResult">-</strong>
+                    </div>
+                  </div>
+
+                  <!-- Subject Editor Table -->
+                  <div class="table-container">
+                    <table class="editor-table" id="subjectEditorTable">
+                      <thead>
+                        <tr>
+                          <th style="width: 7%; text-align: center;">#</th>
+                          <th style="width: 37%;">Subject Name</th>
+                          <th style="width: 18%; text-align: center;">Max</th>
+                          <th style="width: 18%; text-align: center;">Obt</th>
+                          <th style="width: 10%; text-align: center;">Grade</th>
+                          <th style="width: 10%; text-align: center;">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="subjectEditorBody">
+                        <!-- Starts Completely Empty! -->
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="empty-notice" id="subjectsEmptyNotice">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="1.8">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                    </svg>
+                    <p>No subjects entered. Click <strong>"+ Add Subject"</strong> to add subjects.</p>
+                  </div>
+
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.4rem;">
+                    <button class="btn btn-xs btn-outline" onclick="openGradingModal()">Customize Grading Scale</button>
+                    <button class="btn btn-xs btn-success" onclick="saveActiveMarksheet()">💾 Save to Student
+                      Record</button>
+                  </div>
+                </section>
+
+                <!-- 5. Remarks Field Section -->
+                <section class="form-section-card">
+                  <div class="section-card-title">
+                    <span class="step-num">5</span>
+                    <span>Teacher's Remarks</span>
+                  </div>
+
+                  <div class="form-group full-width">
+                    <label class="form-label">Remarks</label>
+                    <textarea id="inpRemarks" class="form-control" rows="2"
+                      placeholder="e.g. Excellent performance. Sincere and hardworking student."
+                      oninput="onDataChanged()"></textarea>
+                  </div>
+                </section>
+
+                <!-- 6. Signatures & Official Seal Section -->
+                <section class="form-section-card">
+                  <div class="section-card-title">
+                    <span class="step-num">6</span>
+                    <span>Signatures & Official Seal</span>
+                  </div>
+
+                  <div class="signatures-grid">
+                    <!-- Class Teacher Signature -->
+                    <div class="sig-upload-box">
+                      <label class="form-label">Class Teacher</label>
+                      <div class="media-preview-container sig-box" id="teacherSignPreviewWrap">
+                        <span class="media-placeholder-txt">No Signature</span>
+                      </div>
+                      <div class="media-btn-group">
+                        <label class="btn btn-xs btn-outline file-upload-label">
+                          <span>Upload</span>
+                          <input type="file" accept="image/*" onchange="handleMediaUpload(this, 'teacherSign')"
+                            style="display:none;">
+                        </label>
+                        <button class="btn btn-xs btn-danger-ghost" id="btnRemoveTeacherSign"
+                          onclick="removeMedia('teacherSign')" style="display:none;">Remove</button>
+                      </div>
+                    </div>
+
+                    <!-- School Seal -->
+                    <div class="sig-upload-box">
+                      <label class="form-label">School Seal</label>
+                      <div class="media-preview-container seal-box" id="schoolSealPreviewWrap">
+                        <span class="media-placeholder-txt">No Seal</span>
+                      </div>
+                      <div class="media-btn-group">
+                        <label class="btn btn-xs btn-outline file-upload-label">
+                          <span>Upload</span>
+                          <input type="file" accept="image/*" onchange="handleMediaUpload(this, 'schoolSeal')"
+                            style="display:none;">
+                        </label>
+                        <button class="btn btn-xs btn-danger-ghost" id="btnRemoveSchoolSeal"
+                          onclick="removeMedia('schoolSeal')" style="display:none;">Remove</button>
+                      </div>
+                    </div>
+
+                    <!-- Principal Signature -->
+                    <div class="sig-upload-box">
+                      <label class="form-label">Principal Sign</label>
+                      <div class="media-preview-container sig-box" id="principalSignPreviewWrap">
+                        <span class="media-placeholder-txt">No Signature</span>
+                      </div>
+                      <div class="media-btn-group">
+                        <label class="btn btn-xs btn-outline file-upload-label">
+                          <span>Upload</span>
+                          <input type="file" accept="image/*" onchange="handleMediaUpload(this, 'principalSign')"
+                            style="display:none;">
+                        </label>
+                        <button class="btn btn-xs btn-danger-ghost" id="btnRemovePrincipalSign"
+                          onclick="removeMedia('principalSign')" style="display:none;">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- 7. Watermark Controls Section -->
+                <section class="form-section-card">
+                  <div class="section-card-title flex-between">
+                    <div>
+                      <span class="step-num">7</span>
+                      <span>Background Watermark</span>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="chkWatermarkToggle" onchange="onDataChanged()" checked>
+                      <span class="toggle-slider"></span>
+                    </label>
+                  </div>
+
+                  <div class="watermark-controls">
+                    <div class="form-group full-width">
+                      <label class="form-label">Custom Watermark Image (Optional)</label>
+                      <div class="media-upload-box">
+                        <div class="media-preview-container" id="watermarkPreviewWrap">
+                          <span class="media-placeholder-txt">Default Logo</span>
+                        </div>
+                        <div class="media-btn-group">
+                          <label class="btn btn-sm btn-outline file-upload-label">
+                            <span>Upload Watermark</span>
+                            <input type="file" accept="image/*" onchange="handleMediaUpload(this, 'watermarkImage')"
+                              style="display: none;">
+                          </label>
+                          <button class="btn btn-sm btn-danger-ghost" id="btnRemoveWatermark"
+                            onclick="removeMedia('watermarkImage')" style="display: none;">Remove</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="range-grid">
+                      <div class="form-group">
+                        <label class="form-label">Opacity: <span id="lblOpacityVal">7%</span></label>
+                        <input type="range" id="rngWatermarkOpacity" min="0.02" max="0.25" step="0.01" value="0.07"
+                          oninput="onDataChanged()">
+                      </div>
+
+                      <div class="form-group">
+                        <label class="form-label">Size: <span id="lblSizeVal">320px</span></label>
+                        <input type="range" id="rngWatermarkSize" min="150" max="500" step="10" value="320"
+                          oninput="onDataChanged()">
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+              </div>
+            </aside>
+
+            <!-- Right Column: Live A4 Visual Preview -->
+            <section class="preview-pane">
+              <div class="preview-top-toolbar">
+                <div class="preview-toolbar-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <span>Live A4 Marksheet Preview</span>
+                </div>
+
+                <div class="preview-toolbar-actions">
+                  <button class="btn btn-sm btn-primary" onclick="triggerDirectPrint()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="6 9 6 2 18 2 18 9" />
+                      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                      <rect width="12" height="8" x="6" y="14" />
+                    </svg>
+                    <span>Print Marksheet</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Live Scaled Container -->
+              <div class="preview-canvas-wrapper" id="marksheetPrintContainer">
+                <div id="liveMarksheetRenderRoot"></div>
+              </div>
+            </section>
+
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             5. TRANSFER CERTIFICATE (TC) MODULE (INDEPENDENT)
+             ============================================================== -->
+        <section class="view-panel" id="viewTC">
+          <div class="split-workspace-view">
+
+            <aside class="editor-pane">
+              <div class="editor-header">
+                <div class="editor-header-title">
+                  <h2>Transfer Certificate (TC) Generator</h2>
+                  <p>Select student or fill TC details. Preview updates live.</p>
+                </div>
+              </div>
+
+              <div class="editor-scroll-body">
+                <!-- Student Selector Ribbon for TC -->
+                <div class="student-selector-bar">
+                  <div class="selector-bar-title">
+                    <span>Select Student for TC</span>
+                  </div>
+                  <div class="selector-dropdowns-row">
+                    <div>
+                      <label class="form-label">1. Class</label>
+                      <select id="tcSelectClass" class="form-control form-control-sm"
+                        onchange="onTcClassSelected(this.value)">
+                        <option value="">-- Class --</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="form-label">2. Section</label>
+                      <select id="tcSelectSection" class="form-control form-control-sm"
+                        onchange="onTcSectionSelected(this.value)">
+                        <option value="">-- Section --</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="form-label">3. Student</label>
+                      <select id="tcSelectStudent" class="form-control form-control-sm"
+                        onchange="onTcStudentSelected(this.value)">
+                        <option value="">-- Choose Student --</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <section class="form-section-card">
+                  <div class="section-card-title">
+                    <span>TC Pupil & Academic Details</span>
+                  </div>
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label class="form-label">TC Serial Number</label>
+                      <input type="text" id="inpTcNo" class="form-control" placeholder="e.g. TC/2026/012"
+                        oninput="renderTcPreview()">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Pupil Name</label>
+                      <input type="text" id="inpTcPupilName" class="form-control" placeholder="Student name"
+                        oninput="renderTcPreview()">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Father's Name</label>
+                      <input type="text" id="inpTcFather" class="form-control" placeholder="Father's name"
+                        oninput="renderTcPreview()">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Mother's Name</label>
+                      <input type="text" id="inpTcMother" class="form-control" placeholder="Mother's name"
+                        oninput="renderTcPreview()">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Class Last Studied</label>
+                      <input type="text" id="inpTcClass" class="form-control" placeholder="e.g. Class 8 - Section A"
+                        oninput="renderTcPreview()">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Date of Birth</label>
+                      <input type="text" id="inpTcDob" class="form-control" placeholder="e.g. 15-08-2014"
+                        oninput="renderTcPreview()">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Date of Leaving / Issue</label>
+                      <input type="text" id="inpTcIssueDate" class="form-control" placeholder="e.g. 29-09-2026"
+                        oninput="renderTcPreview()">
+                    </div>
+                    <div class="form-group full-width">
+                      <label class="form-label">Reason for Leaving</label>
+                      <input type="text" id="inpTcReason" class="form-control"
+                        placeholder="e.g. Parent Job Transfer / Higher Studies" oninput="renderTcPreview()">
+                    </div>
+                  </div>
+                  <div style="display:flex; justify-content:flex-end; margin-top:0.4rem;">
+                    <button class="btn btn-sm btn-success" onclick="saveActiveTc()">💾 Save Issued TC</button>
+                  </div>
+                </section>
+              </div>
+            </aside>
+
+            <section class="preview-pane">
+              <div class="preview-top-toolbar">
+                <div class="preview-toolbar-title">
+                  <span>Transfer Certificate (A4 Preview)</span>
+                </div>
+                <button class="btn btn-sm btn-primary" onclick="triggerDirectPrint()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 6 2 18 2 18 9" />
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                    <rect width="12" height="8" x="6" y="14" />
+                  </svg>
+                  <span>Print TC</span>
+                </button>
+              </div>
+              <div class="preview-canvas-wrapper" id="tcPrintContainer">
+                <div id="liveTcRenderRoot"></div>
+              </div>
+            </section>
+
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             6. SETTINGS VIEW
+             ============================================================== -->
+        <section class="view-panel" id="viewSettings">
+          <div class="scrollable-view-content">
+
+            <div class="dashboard-section">
+              <div class="section-head">
+                <h3>School Profile & General Information</h3>
+                <button class="btn btn-sm btn-primary" onclick="saveSchoolSettings()">Save Settings</button>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group full-width">
+                  <label class="form-label">School Official Name</label>
+                  <input type="text" id="setSchoolName" class="form-control"
+                    value="Dr. Ram Manohar Lohia Public School">
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">School Address / Location</label>
+                  <input type="text" id="setSchoolAddress" class="form-control" value="Badlapur, Jaunpur">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">School Phone / Contact</label>
+                  <input type="text" id="setSchoolPhone" class="form-control" placeholder="+91 9876543210">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">School Email</label>
+                  <input type="email" id="setSchoolEmail" class="form-control" placeholder="info@rmlschool.edu">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Default Academic Session</label>
+                  <input type="text" id="setAcademicSession" class="form-control" value="2025 - 2026">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Default Examination Title</label>
+                  <input type="text" id="setExamName" class="form-control" value="REPORT CARD / MARKSHEET">
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">School Tagline</label>
+                  <input type="text" id="setSchoolTagline" class="form-control"
+                    value="— Discipline | Knowledge | Success —">
+                </div>
+              </div>
+            </div>
+
+            <!-- Admin Security & Access Control -->
+            <div class="dashboard-section">
+              <div class="section-head">
+                <h3>Admin Security & Login Credentials</h3>
+                <button class="btn btn-sm btn-primary" onclick="updateAdminCredentials()">Update Credentials</button>
+              </div>
+              <p style="font-size:0.82rem; color:var(--text-secondary);">
+                Change the master username and password required to access this system on startup.
+              </p>
+              <div class="form-grid" style="margin-top:0.5rem;">
+                <div class="form-group">
+                  <label class="form-label">Admin Username</label>
+                  <input type="text" id="setAdminUsername" class="form-control" value="admin">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Admin Password</label>
+                  <input type="password" id="setAdminPassword" class="form-control" placeholder="Enter new password">
+                </div>
+              </div>
+            </div>
+
+            <!-- Database Backup & Restore -->
+            <div class="dashboard-section">
+              <div class="section-head">
+                <h3>Database Backup & Portability</h3>
+              </div>
+              <p style="font-size:0.82rem; color:var(--text-secondary);">
+                All students, marksheets, and settings are stored locally in your browser. You can export a JSON backup
+                to keep safe or import data anytime.
+              </p>
+              <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:0.5rem;">
+                <button class="btn btn-outline" onclick="exportDatabaseJSON()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  <span>Export Database (JSON Backup)</span>
+                </button>
+
+                <label class="btn btn-outline file-upload-label">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                  <span>Import Database (Restore JSON)</span>
+                  <input type="file" accept=".json" onchange="importDatabaseJSON(this)" style="display:none;">
+                </label>
+
+                <button class="btn btn-danger-ghost" onclick="resetDatabaseWithConfirm()">
+                  <span>Clear All Database Records</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       ADD / EDIT STUDENT MODAL
+       ==================================================================== -->
+  <div class="modal-overlay" id="studentModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+          </svg>
+          <span id="studentModalTitle">Register New Student</span>
+        </div>
+        <button class="modal-close" onclick="closeModal('studentModal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <input type="hidden" id="modalStudentId" value="">
+
+        <div class="form-grid">
+          <!-- Student Name -->
+          <div class="form-group full-width">
+            <label class="form-label">Student Full Name <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="mInpStudentName" class="form-control" placeholder="Enter student's full name"
+              required>
+          </div>
+
+          <!-- Father Name -->
+          <div class="form-group">
+            <label class="form-label">Father's Name</label>
+            <input type="text" id="mInpFatherName" class="form-control" placeholder="Enter father's name">
+          </div>
+
+          <!-- Mother Name -->
+          <div class="form-group">
+            <label class="form-label">Mother's Name</label>
+            <input type="text" id="mInpMotherName" class="form-control" placeholder="Enter mother's name">
+          </div>
+
+          <!-- Class Dropdown -->
+          <div class="form-group">
+            <label class="form-label">Class <span style="color:#ef4444;">*</span></label>
+            <select id="mInpClass" class="form-control">
+              <option value="Class 1">Class 1</option>
+              <option value="Class 2">Class 2</option>
+              <option value="Class 3">Class 3</option>
+              <option value="Class 4">Class 4</option>
+              <option value="Class 5">Class 5</option>
+              <option value="Class 6" selected>Class 6</option>
+              <option value="Class 7">Class 7</option>
+              <option value="Class 8">Class 8</option>
+              <option value="Class 9">Class 9</option>
+              <option value="Class 10">Class 10</option>
+              <option value="Class 11">Class 11</option>
+              <option value="Class 12">Class 12</option>
+              <option value="Nursery">Nursery</option>
+              <option value="LKG">LKG</option>
+              <option value="UKG">UKG</option>
+            </select>
+          </div>
+
+          <!-- Section Dropdown -->
+          <div class="form-group">
+            <label class="form-label">Section <span style="color:#ef4444;">*</span></label>
+            <select id="mInpSection" class="form-control">
+              <option value="A" selected>Section A</option>
+              <option value="B">Section B</option>
+              <option value="C">Section C</option>
+              <option value="D">Section D</option>
+            </select>
+          </div>
+
+          <!-- Roll Number -->
+          <div class="form-group">
+            <label class="form-label">Roll Number</label>
+            <input type="text" id="mInpRollNo" class="form-control" placeholder="e.g. 101">
+          </div>
+
+          <!-- Admission Number -->
+          <div class="form-group">
+            <label class="form-label">Admission Number</label>
+            <input type="text" id="mInpAdmissionNo" class="form-control" placeholder="e.g. 2025/012">
+          </div>
+
+          <!-- Date of Birth -->
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input type="text" id="mInpDob" class="form-control" placeholder="e.g. 15-08-2014">
+          </div>
+
+          <!-- Contact Number -->
+          <div class="form-group">
+            <label class="form-label">Contact Number</label>
+            <input type="text" id="mInpContact" class="form-control" placeholder="e.g. +91 9876543210">
+          </div>
+
+          <!-- Address -->
+          <div class="form-group full-width">
+            <label class="form-label">Address</label>
+            <input type="text" id="mInpAddress" class="form-control" placeholder="e.g. Badlapur, Jaunpur">
+          </div>
+
+          <!-- Student Photo Upload -->
+          <div class="form-group full-width">
+            <label class="form-label">Student Photo</label>
+            <div class="media-upload-box">
+              <div class="media-preview-container photo-box" id="modalPhotoPreviewWrap">
+                <span class="media-placeholder-txt">No Photo</span>
+              </div>
+              <div class="media-btn-group">
+                <label class="btn btn-sm btn-outline file-upload-label">
+                  <span>Upload Photo</span>
+                  <input type="file" id="mFileStudentPhoto" accept="image/*" onchange="handleModalPhotoUpload(this)"
+                    style="display:none;">
+                </label>
+                <button type="button" class="btn btn-sm btn-danger-ghost" id="mBtnRemovePhoto"
+                  onclick="removeModalPhoto()" style="display:none;">Remove</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('studentModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveStudentFromModal()">Save Student</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       CUSTOM GRADING SYSTEM MODAL
+       ==================================================================== -->
+  <div class="modal-overlay" id="gradingModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <path d="M7 17v-4" />
+            <path d="M12 17v-8" />
+            <path d="M17 17v-11" />
+          </svg>
+          <span>Define Custom Grading Scale</span>
+        </div>
+        <button class="modal-close" onclick="closeModal('gradingModal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:1rem;">
+          Customize the grade boundaries and remarks. Marksheet automatically calculates grades based on these
+          percentages.
+        </p>
+
+        <div class="table-container" style="max-height: 320px; overflow-y: auto;">
+          <table class="editor-table">
+            <thead>
+              <tr>
+                <th style="width: 20%; text-align: center;">Grade</th>
+                <th style="width: 22%; text-align: center;">Min %</th>
+                <th style="width: 22%; text-align: center;">Max %</th>
+                <th style="width: 26%;">Remark</th>
+                <th style="width: 10%; text-align: center;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="gradingScaleModalBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 1rem; display: flex; justify-content: space-between;">
+          <button class="btn btn-sm btn-outline" onclick="addGradingTier()">+ Add Grade Tier</button>
+          <button class="btn btn-sm btn-ghost" onclick="loadDefaultGradingPreset()">Reset Reference Scale</button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('gradingModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveGradingScale()">Apply Grading Scale</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Master Application Script -->
+  <script src="js/app.js"></script>
+</body>
+
+</html>
